@@ -1,14 +1,14 @@
-#把数字改为图片
+# 把数字改为图片
 
-import sys
 import random
+import sys
 from enum import IntEnum
-from PyQt5.QtWidgets import QLabel, QWidget, QApplication, QGridLayout, QMessageBox
-from PyQt5.QtGui import QFont, QPalette, QIcon, QPixmap
-from PyQt5.QtCore import Qt
-import cv2
 
-import numpy
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtWidgets import QLabel, QWidget, QApplication, QGridLayout, QMessageBox
+
+
 # 用枚举类表示方向
 class Direction(IntEnum):
     UP = 0
@@ -19,13 +19,15 @@ class Direction(IntEnum):
 
 class NumberHuaRong(QWidget):
     """ 华容道主体 """
+
     def __init__(self):
         super().__init__()
+        self.numbers = list(range(1, 10))
         self.blocks = []
-        #0的坐标
+        # 0的坐标
         self.zero_row = 0
         self.zero_column = 0
-        self.rand = 0 #缺的数字
+        self.rand = 0  # 缺的数字
         self.gltMain = QGridLayout()
 
         self.initUI()
@@ -39,7 +41,7 @@ class NumberHuaRong(QWidget):
         # 设置布局
         self.setLayout(self.gltMain)
         # 设置宽和高
-        self.setFixedSize(950,950)
+        self.setFixedSize(950, 950)
         # 设置标题和图标
         self.setWindowTitle('图片华容道')
         self.setWindowIcon(QIcon("图标.png"))
@@ -52,8 +54,7 @@ class NumberHuaRong(QWidget):
         # 产生顺序数组
         self.rand = random.randint(1, 9)  # 缺的数字
         # print("rand ",self.rand)
-        self.numbers = list(range(1, 10))
-        self.numbers[self.rand-1] = 0
+        self.numbers[self.rand - 1] = 0
         # print("numbers ",self.numbers)
         # 将数字添加到二维数组
         self.blocks = []
@@ -78,13 +79,13 @@ class NumberHuaRong(QWidget):
     # 检测按键
     def keyPressEvent(self, event):
         key = event.key()
-        if (key == Qt.Key_Up or key == Qt.Key_W):
+        if key == Qt.Key_Up or key == Qt.Key_W:
             self.move(Direction.DOWN)
-        if (key == Qt.Key_Down or key == Qt.Key_S):
+        if key == Qt.Key_Down or key == Qt.Key_S:
             self.move(Direction.UP)
-        if (key == Qt.Key_Left or key == Qt.Key_A):
+        if key == Qt.Key_Left or key == Qt.Key_A:
             self.move(Direction.RIGHT)
-        if (key == Qt.Key_Right or key == Qt.Key_D):
+        if key == Qt.Key_Right or key == Qt.Key_D:
             self.move(Direction.LEFT)
         self.updatePanel()
         if self.checkResult():
@@ -93,22 +94,22 @@ class NumberHuaRong(QWidget):
 
     # 方块移动算法
     def move(self, direction):
-        if(direction == Direction.UP): # 上
+        if direction == Direction.UP:  # 上
             if self.zero_row != 2:
                 self.blocks[self.zero_row][self.zero_column] = self.blocks[self.zero_row + 1][self.zero_column]
                 self.blocks[self.zero_row + 1][self.zero_column] = 0
                 self.zero_row += 1
-        if(direction == Direction.DOWN): # 下
+        if direction == Direction.DOWN:  # 下
             if self.zero_row != 0:
                 self.blocks[self.zero_row][self.zero_column] = self.blocks[self.zero_row - 1][self.zero_column]
                 self.blocks[self.zero_row - 1][self.zero_column] = 0
                 self.zero_row -= 1
-        if(direction == Direction.LEFT): # 左
+        if direction == Direction.LEFT:  # 左
             if self.zero_column != 2:
                 self.blocks[self.zero_row][self.zero_column] = self.blocks[self.zero_row][self.zero_column + 1]
                 self.blocks[self.zero_row][self.zero_column + 1] = 0
                 self.zero_column += 1
-        if(direction == Direction.RIGHT): # 右
+        if direction == Direction.RIGHT:  # 右
             if self.zero_column != 0:
                 self.blocks[self.zero_row][self.zero_column] = self.blocks[self.zero_row][self.zero_column - 1]
                 self.blocks[self.zero_row][self.zero_column - 1] = 0
@@ -131,7 +132,7 @@ class NumberHuaRong(QWidget):
             for column in range(3):
                 if row == self.zero_row and column == self.zero_column:
                     pass
-                #值是否对应
+                # 值是否对应
                 elif self.blocks[row][column] != row * 3 + column + 1:
                     return False
 
@@ -145,6 +146,7 @@ class NumberHuaRong(QWidget):
         #     return True
         # return False
 
+
 class Block(QLabel):
     """ 数字方块 """
 
@@ -152,11 +154,11 @@ class Block(QLabel):
         super().__init__()
         self.imgPath = ["sub" + str(i) + ".png" for i in range(1, 10)]
         self.number = number
-        self.setFixedSize(300, 300)#控制窗体大小
+        self.setFixedSize(300, 300)  # 控制窗体大小
         if self.number > 0:
-        # 导入图片
-        #     img = cv2.imread("sub1.png")
-            imgName = self.imgPath[number-1]
+            # 导入图片
+            #     img = cv2.imread("sub1.png")
+            imgName = self.imgPath[number - 1]
             pix = QPixmap(imgName)
             lb1 = QLabel(self)
             lb1.setPixmap(pix)
