@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QLabel, QWidget, QApplication, QGridLayout, QMessage
 from PyQt5.QtGui import QFont, QPalette
 from PyQt5.QtCore import Qt
 
+
 # 用枚举类表示方向
 class Direction(IntEnum):
     UP = 0
