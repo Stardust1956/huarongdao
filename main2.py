@@ -16,8 +16,10 @@ class Direction(IntEnum):
 
 class NumberHuaRong(QWidget):
     """ 华容道主体 """
+
     def __init__(self):
         super().__init__()
+        self.numbers = list(range(1, 9))
         self.blocks = []
         self.zero_row = 0
         self.zero_column = 0
@@ -44,7 +46,6 @@ class NumberHuaRong(QWidget):
     # 初始化布局
     def onInit(self):
         # 产生顺序数组
-        self.numbers = list(range(1, 9))
         self.numbers.append(0)
 
         # 将数字添加到二维数组
@@ -68,13 +69,13 @@ class NumberHuaRong(QWidget):
     # 检测按键
     def keyPressEvent(self, event):
         key = event.key()
-        if(key == Qt.Key_Up or key == Qt.Key_W):
+        if key == Qt.Key_Up or key == Qt.Key_W:
             self.move(Direction.UP)
-        if(key == Qt.Key_Down or key == Qt.Key_S):
+        if key == Qt.Key_Down or key == Qt.Key_S:
             self.move(Direction.DOWN)
-        if(key == Qt.Key_Left or key == Qt.Key_A):
+        if key == Qt.Key_Left or key == Qt.Key_A:
             self.move(Direction.LEFT)
-        if(key == Qt.Key_Right or key == Qt.Key_D):
+        if key == Qt.Key_Right or key == Qt.Key_D:
             self.move(Direction.RIGHT)
         self.updatePanel()
         if self.checkResult():
@@ -83,22 +84,22 @@ class NumberHuaRong(QWidget):
 
     # 方块移动算法
     def move(self, direction):
-        if(direction == Direction.DOWN): # 上
+        if direction == Direction.DOWN:  # 上
             if self.zero_row != 2:
                 self.blocks[self.zero_row][self.zero_column] = self.blocks[self.zero_row + 1][self.zero_column]
                 self.blocks[self.zero_row + 1][self.zero_column] = 0
                 self.zero_row += 1
-        if(direction == Direction.UP): # 下
+        if direction == Direction.UP:  # 下
             if self.zero_row != 0:
                 self.blocks[self.zero_row][self.zero_column] = self.blocks[self.zero_row - 1][self.zero_column]
                 self.blocks[self.zero_row - 1][self.zero_column] = 0
                 self.zero_row -= 1
-        if(direction == Direction.RIGHT): # 左
+        if direction == Direction.RIGHT:  # 左
             if self.zero_column != 2:
                 self.blocks[self.zero_row][self.zero_column] = self.blocks[self.zero_row][self.zero_column + 1]
                 self.blocks[self.zero_row][self.zero_column + 1] = 0
                 self.zero_column += 1
-        if(direction == Direction.LEFT): # 右
+        if direction == Direction.LEFT:  # 右
             if self.zero_column != 0:
                 self.blocks[self.zero_row][self.zero_column] = self.blocks[self.zero_row][self.zero_column - 1]
                 self.blocks[self.zero_row][self.zero_column - 1] = 0
@@ -122,11 +123,12 @@ class NumberHuaRong(QWidget):
                 # 运行到此处说名最右下角已经为0，pass即可
                 if row == 2 and column == 2:
                     pass
-                #值是否对应
+                # 值是否对应
                 elif self.blocks[row][column] != row * 3 + column + 1:
                     return False
 
         return True
+
 
 class Block(QLabel):
     """ 数字方块 """
