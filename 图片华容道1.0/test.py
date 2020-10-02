@@ -292,7 +292,8 @@ class NumberHuaRong(QWidget):
     # 初始化布局
     def onInit(self):
         # 产生顺序数组
-
+        global ans
+        ans = ""
         self.ans = ""
         self.count = 0
         self.rand = random.randint(1, 9)  # 缺的数字
@@ -401,6 +402,7 @@ class NumberHuaRong(QWidget):
         col1 = x[0] % 3
         row2 = int(x[1] / 3)
         col2 = x[1] % 3
+        print('第{0}步 强制交换{1}：'.format(step, swap))
         self.blocks[row1][col1], self.blocks[row2][col2] = self.blocks[row2][col2], self.blocks[row1][col1]
         if judge(self.blocks, self.goal):
             return
@@ -427,6 +429,7 @@ class NumberHuaRong(QWidget):
             row2 = int(flag2 / 3)
             col2 = flag2 % 3
             self.blocks[row1][col1], self.blocks[row2][col2] = self.blocks[row2][col2], self.blocks[row1][col1]
+            print('无解，进行用户交换{0}：'.format([flag1, flag2]))
             return
 
     def solve(self):
@@ -441,7 +444,6 @@ class NumberHuaRong(QWidget):
         target = self.goal.copy()
         stat = self.mylist
         Astar(stat)
-        print(ans)
         if len(ans) <= step:
             print(ans)
         else:
