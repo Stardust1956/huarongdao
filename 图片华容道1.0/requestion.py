@@ -12,13 +12,15 @@ def gethtml(url):
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3941.4 Safari/537.36'
         }
 
-        r=requests.get(url,headers = headers)
+        r = requests.get(url, headers=headers)
         r.raise_for_status()
-        r.encoding=r.apparent_encoding
+        r.encoding = r.apparent_encoding
         return r.text
     except:
         return ""
-if __name__ == "__main__":
+
+
+def getproblem():
     url = "http://47.102.118.1:8089/api/problem?stuid=031802433"
     # 每次请求的结果都不一样，动态变化
     text = json.loads(gethtml(url))
@@ -29,18 +31,39 @@ if __name__ == "__main__":
     swap = text["swap"]
     uuid = text["uuid"]
     img = base64.b64decode(img_base64)
-    #获取接口的图片并写入本地
+    # 获取接口的图片并写入本地
     with open("photo.jpg", "wb") as fp:
-        fp.write(img)#900*900
-    #切分图片，切成9张
+        fp.write(img)  # 900*900
+    # 切分图片，切成9张
     img = cv2.imread("photo.jpg", cv2.IMREAD_GRAYSCALE)
     for row in range(3):
         for colum in range(3):
             sub = img[row * 300:(row + 1) * 300, colum * 300:(colum + 1) * 300]
             # print(sub.shape)
             cv2.imwrite("Getsub" + str(row * 3 + colum + 1) + ".jpg", sub)
-    #映射图片，因为得到的图片顺序是未知的，所以需要一个映射把图片的顺序弄正确，这一部分还没完成
-    quedinxulie.getlist()
+    # 映射图片，因为得到的图片顺序是未知的，所以需要一个映射把图片的顺序弄正确，这一部分还没完成
+    zuhao, alist = quedinxulie.getlist()
+    return step, swap, uuid, zuhao, alist
 
 
+def getAnswer(url, data_json):
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3941.4 Safari/537.36',
+        'Content-Type': 'application/json'
+    }
+    r = requests.post(url, headers=headers, data=data_json)
+    return r.text
 
+
+def submit():
+    url = " http://47.102.118.1:8089/api/answer"
+    data = {
+        "uuid": "20c8d3e27d6e4d638a1fed4218737e41",  # 本道题目标识
+        "answer": {
+            "operations": "wsaaadasdadadaws",
+            "swap": [1, 2]
+        }
+    }
+    data_json = json.dumps(data)
+    ret = getAnswer(url, data_json)
+    print(ret)

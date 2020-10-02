@@ -1,6 +1,7 @@
 import copy
 import random
 import sys
+import requestion
 from enum import IntEnum
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon, QPixmap
@@ -483,7 +484,7 @@ class Block(QLabel):
 
     def __init__(self, number):
         super().__init__()
-        self.imgPath = ["sub" + str(i) + ".png" for i in range(1, 10)]
+        self.imgPath = ["Getsub" + str(i) + ".png" for i in range(1, 10)]
         self.number = number
         self.setFixedSize(300, 300)  # 控制窗体大小
         if self.number > 0:
@@ -498,6 +499,7 @@ class Block(QLabel):
 
 
 if __name__ == '__main__':
+    requestion
     app = QApplication(sys.argv)
     ex = NumberHuaRong()
     sys.exit(app.exec_())

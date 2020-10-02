@@ -81,5 +81,5 @@ def getlist():
     alist = getxulie(zuhao)
     print(zuhao)
     print(alist)
-    return alist
+    return zuhao, alist
 
