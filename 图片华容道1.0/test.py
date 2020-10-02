@@ -9,6 +9,8 @@ from PyQt5.QtWidgets import QLabel, QWidget, QApplication, QGridLayout, QMessage
 # 棋盘的类，实现移动和扩展状态
 target = []
 ans = " "
+step = 0
+swap = []
 
 
 class grid:
@@ -68,7 +70,6 @@ class grid:
         listans = list(ans)
         listans.reverse()
         ans = "".join(listans)
-        print(ans)
 
     def find2(self):
         for i in range(3):
@@ -137,6 +138,19 @@ def isin(g, gList):
     else:
         res = [False, 0]
     return res
+
+
+# 计算不在位的个数
+def getcost(alist):
+    cost = 0
+    for row in range(3):
+        for column in range(3):
+            if alist[row][column] == 0:
+                pass
+                # 值是否对应
+            elif alist[row][column] != row * 3 + column + 1:
+                cost = cost + 1
+    return cost
 
 
 # 计算逆序数之和
@@ -231,6 +245,14 @@ class Direction(IntEnum):
     RIGHT = 3
 
 
+# 设置参数
+def set(x, y):
+    global step
+    global swap
+    step = x
+    swap = y.copy()
+
+
 class NumberHuaRong(QWidget):
     """ 华容道主体 """
 
@@ -311,6 +333,9 @@ class NumberHuaRong(QWidget):
         if key == Qt.Key_X:
             self.solve()
             self.ans = ans
+        if key == Qt.Key_Z:
+            self.solve2()
+            self.ans = ans
         if key == Qt.Key_C:
             mm = self.ans[self.count]
             if mm == 'w':
@@ -323,9 +348,6 @@ class NumberHuaRong(QWidget):
                 self.move(Direction.LEFT)
             self.updatePanel()
             self.count += 1
-            if self.checkResult():
-                if QMessageBox.Ok == QMessageBox.information(self, '挑战结果', '恭喜您完成挑战！'):
-                    self.onInit()  # 结束后重新开始
 
         self.updatePanel()
 
@@ -374,7 +396,41 @@ class NumberHuaRong(QWidget):
 
         return True
 
+    def change(self, x):
+        row1 = int(x[0] / 3)
+        col1 = x[0] % 3
+        row2 = int(x[1] / 3)
+        col2 = x[1] % 3
+        self.blocks[row1][col1], self.blocks[row2][col2] = self.blocks[row2][col2], self.blocks[row1][col1]
+        if judge(self.blocks, self.goal):
+            return
+        else:
+            mini = 10
+            flag1 = 0
+            flag2 = 0
+            for i in range(9):
+                for j in range(i, 9):
+                    list1 = copy.deepcopy(self.blocks)
+                    row1 = int(i / 3)
+                    col1 = i % 3
+                    row2 = int(j / 3)
+                    col2 = j % 3
+                    list1[row1][col1], list1[row2][col2] = list1[row2][col2], list1[row1][col1]
+                    if judge(list1, self.goal):
+                        thiscost = getcost(list1)
+                        if mini > thiscost:
+                            mini = thiscost
+                            flag1 = i
+                            flag2 = j
+            row1 = int(flag1 / 3)
+            col1 = flag1 % 3
+            row2 = int(flag2 / 3)
+            col2 = flag2 % 3
+            self.blocks[row1][col1], self.blocks[row2][col2] = self.blocks[row2][col2], self.blocks[row1][col1]
+            return
+
     def solve(self):
+        set(10, [3, 2])
         self.goal = []
         for row in range(3):
             self.goal.append([])
@@ -385,6 +441,39 @@ class NumberHuaRong(QWidget):
         target = self.goal.copy()
         stat = self.mylist
         Astar(stat)
+        print(ans)
+        if len(ans) <= step:
+            print(ans)
+        else:
+            anscopy = ans[0:step]
+            for i in range(step):
+                mm = ans[i]
+                if mm == 'w':
+                    self.move(Direction.DOWN)
+                elif mm == 's':
+                    self.move(Direction.UP)
+                elif mm == 'a':
+                    self.move(Direction.RIGHT)
+                elif mm == 'd':
+                    self.move(Direction.LEFT)
+            self.change(swap)
+            stat = self.mylist
+            Astar(stat)
+            anscopy = anscopy + ans
+            print(anscopy)
+
+    def solve2(self):
+        self.goal = []
+        for row in range(3):
+            self.goal.append([])
+            for column in range(3):
+                temp = self.numbers[row * 3 + column]
+                self.goal[row].append(temp)
+        global target
+        target = self.goal.copy()
+        stat = self.mylist
+        Astar(stat)
+        print(ans)
 
 
 class Block(QLabel):

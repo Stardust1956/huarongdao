@@ -147,6 +147,7 @@ class NumberHuaRong(QWidget):
         # return False
 
 
+
 class Block(QLabel):
     """ 数字方块 """
 
