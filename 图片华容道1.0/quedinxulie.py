@@ -63,11 +63,17 @@ def getxulie(zuhao):
                 path22 = 'D://0作业/软工实践/hrd/确定序列/' + str(zuhao) + '_' + str(j) + ".jpg"
                 if compare_images(path11, path22):
                     listnow.append(j)
+    disnumber = 0
+    listnowsum = 0
+    for i in listnow:
+        listnowsum += int(i)
+        disnumber = 45 - listnowsum
     listnow2 = [[], [], []]
     listnow2[0] = listnow[0:3]
     listnow2[1] = listnow[3:6]
     listnow2[2] = listnow[6:9]
-    return listnow2
+    return listnow2, disnumber
+
 
 def getlist():
     path1 = ''
@@ -78,8 +84,10 @@ def getlist():
                 path1 = filename
                 break
     zuhao = getzu(path1)
-    alist = getxulie(zuhao)
-    print(zuhao)
-    print(alist)
-    return zuhao, alist
-
+    alist, disnumber = getxulie(zuhao)
+    print("该图是第{0}张图片".format(zuhao))
+    print("题目序列是")
+    print(alist[0])
+    print(alist[1])
+    print(alist[2])
+    return zuhao, alist, disnumber

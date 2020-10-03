@@ -42,8 +42,8 @@ def getproblem():
             # print(sub.shape)
             cv2.imwrite("Getsub" + str(row * 3 + colum + 1) + ".jpg", sub)
     # 映射图片，因为得到的图片顺序是未知的，所以需要一个映射把图片的顺序弄正确，这一部分还没完成
-    zuhao, alist = quedinxulie.getlist()
-    return step, swap, uuid, zuhao, alist
+    zuhao, alist, disnumber = quedinxulie.getlist()
+    return step, swap, uuid, zuhao, alist, disnumber
 
 
 def getAnswer(url, data_json):
@@ -55,15 +55,15 @@ def getAnswer(url, data_json):
     return r.text
 
 
-def submit():
+def submit(uuid, operations, swap):
     url = " http://47.102.118.1:8089/api/answer"
-    data = {
-        "uuid": "20c8d3e27d6e4d638a1fed4218737e41",  # 本道题目标识
-        "answer": {
-            "operations": "wsaaadasdadadaws",
-            "swap": [1, 2]
-        }
-    }
+    data = {"uuid": uuid, "answer": {"operations": operations, "swap": swap}}
     data_json = json.dumps(data)
     ret = getAnswer(url, data_json)
-    print(ret)
+    ret2 = json.loads(ret)
+    answer = ret2['answer']
+    score = ret2['score']
+    time = ret2['time']
+    print('answer:', answer)
+    print('score:', score)
+    print('time:', time)

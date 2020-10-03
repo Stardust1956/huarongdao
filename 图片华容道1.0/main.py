@@ -1,6 +1,6 @@
 import copy
+import random
 import sys
-import requestion
 from enum import IntEnum
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon, QPixmap
@@ -8,15 +8,9 @@ from PyQt5.QtWidgets import QLabel, QWidget, QApplication, QGridLayout, QMessage
 
 # 棋盘的类，实现移动和扩展状态
 target = []
-ans = ""
+ans = " "
 step = 0
 swap = []
-uuid = ""
-zuhao = 0
-listproblem = []
-disnumber = 0
-myswap = [0, 0]
-operations = ""
 
 
 class grid:
@@ -58,7 +52,7 @@ class grid:
     # 查看找到的解是如何从头移动的
     def seeAns(self):
         global ans
-        ans = ""
+        ans = " "
         p = self
         while p.pre:
             x1, y1 = p.find2()
@@ -76,7 +70,6 @@ class grid:
         listans = list(ans)
         listans.reverse()
         ans = "".join(listans)
-        print(ans)
 
     def find2(self):
         for i in range(3):
@@ -253,19 +246,11 @@ class Direction(IntEnum):
 
 
 # 设置参数
-def set(x, y, z, p, q, r):
+def set(x, y):
     global step
     global swap
-    global uuid
-    global zuhao
-    global listproblem
-    global disnumber
     step = x
     swap = y.copy()
-    uuid = z
-    zuhao = p
-    listproblem = q
-    disnumber = r
 
 
 class NumberHuaRong(QWidget):
@@ -278,7 +263,7 @@ class NumberHuaRong(QWidget):
         # 0的坐标
         self.zero_row = 0
         self.zero_column = 0
-        self.disnum = 0  # 缺的数字位置
+        self.rand = 0  # 缺的数字
         self.gltMain = QGridLayout()
         self.cost = 0
         self.mylist = []
@@ -311,24 +296,28 @@ class NumberHuaRong(QWidget):
         ans = ""
         self.ans = ""
         self.count = 0
-        self.disnum = disnumber  # 缺的数字
+        self.rand = random.randint(1, 9)  # 缺的数字
         self.numbers = list(range(1, 10))
-        self.numbers[self.disnum - 1] = 0
+        self.numbers[self.rand - 1] = 0
         # 将数字添加到二维数组
-        self.blocks = copy.deepcopy(listproblem)
+        self.blocks = []
         for row in range(3):
+            self.blocks.append([])
             for column in range(3):
-                temp = self.blocks[row][column]
+                temp = self.numbers[row * 3 + column]
+                # print(temp)
                 if temp == 0:
                     self.zero_row = row
                     self.zero_column = column
+
+                self.blocks[row].append(temp)
         # 打乱数组
-        '''for i in range(5000):
+        for i in range(5000):
             random_num = random.randint(0, 3)
-            self.move(Direction(random_num))'''
+            self.move(Direction(random_num))
         self.mylist = self.blocks.copy()
+        # print(self.mylist)
         self.updatePanel()
-        self.solve3()
 
     # 检测按键
     def keyPressEvent(self, event):
@@ -346,7 +335,7 @@ class NumberHuaRong(QWidget):
             self.solve()
             self.ans = ans
         if key == Qt.Key_Z:
-            self.solve3()
+            self.solve2()
             self.ans = ans
         if key == Qt.Key_C:
             mm = self.ans[self.count]
@@ -360,7 +349,9 @@ class NumberHuaRong(QWidget):
                 self.move(Direction.LEFT)
             self.updatePanel()
             self.count += 1
+
         self.updatePanel()
+
         if self.checkResult():
             if QMessageBox.Ok == QMessageBox.information(self, '挑战结果', '恭喜您完成挑战！'):
                 self.onInit()  # 结束后重新开始
@@ -407,15 +398,12 @@ class NumberHuaRong(QWidget):
         return True
 
     def change(self, x):
-        global myswap
-        row1 = int((x[0] - 1) / 3)
-        col1 = (x[0] - 1) % 3
-        row2 = int((x[1] - 1) / 3)
-        col2 = (x[1] - 1) % 3
+        row1 = int(x[0] / 3)
+        col1 = x[0] % 3
+        row2 = int(x[1] / 3)
+        col2 = x[1] % 3
         print('第{0}步 强制交换{1}：'.format(step, swap))
-        # print('强制交换前', self.blocks)
         self.blocks[row1][col1], self.blocks[row2][col2] = self.blocks[row2][col2], self.blocks[row1][col1]
-        # print('强制交换后',self.blocks)
         if judge(self.blocks, self.goal):
             return
         else:
@@ -440,14 +428,12 @@ class NumberHuaRong(QWidget):
             col1 = flag1 % 3
             row2 = int(flag2 / 3)
             col2 = flag2 % 3
-            # print('用户交换前', self.blocks)
             self.blocks[row1][col1], self.blocks[row2][col2] = self.blocks[row2][col2], self.blocks[row1][col1]
-            print('无解，进行用户交换{0}：'.format([flag1+1, flag2+1]))
-            # print('用户交换后', self.blocks)
-            myswap = [flag1 + 1, flag2 + 1]
+            print('无解，进行用户交换{0}：'.format([flag1, flag2]))
             return
 
     def solve(self):
+        set(10, [3, 2])
         self.goal = []
         for row in range(3):
             self.goal.append([])
@@ -457,52 +443,6 @@ class NumberHuaRong(QWidget):
         global target
         target = self.goal.copy()
         stat = self.mylist
-        '''targettemp = copy.deepcopy(target)
-        if not judge(stat, target):
-            mini = 10
-            flag1 = 0
-            flag2 = 0
-            for i in range(9):
-                for j in range(i, 9):
-                    list1 = copy.deepcopy(self.blocks)
-                    row1 = int(i / 3)
-                    col1 = i % 3
-                    row2 = int(j / 3)
-                    col2 = j % 3
-                    list1[row1][col1], list1[row2][col2] = list1[row2][col2], list1[row1][col1]
-                    if judge(list1, self.goal):
-                        thiscost = getcost(list1)
-                        if mini > thiscost:
-                            mini = thiscost
-                            flag1 = i
-                            flag2 = j
-            row1 = int(flag1 / 3)
-            col1 = flag1 % 3
-            row2 = int(flag2 / 3)
-            col2 = flag2 % 3
-            target[row1][col1], target[row2][col2] = target[row2][col2], target[row1][col1]
-            Astar(stat)
-            if len(ans) <= step:
-                print(ans)
-            else:
-                anscopy = ans[0:step]
-                for i in range(step):
-                    mm = ans[i]
-                    if mm == 'w':
-                        self.move(Direction.DOWN)
-                    elif mm == 's':
-                        self.move(Direction.UP)
-                    elif mm == 'a':
-                        self.move(Direction.RIGHT)
-                    elif mm == 'd':
-                        self.move(Direction.LEFT)
-                self.change(swap)
-                stat = self.mylist
-                target = copy.deepcopy(targettemp)
-                Astar(stat)
-                anscopy = anscopy + ans
-                print(anscopy)
-        else:'''
         Astar(stat)
         if len(ans) <= step:
             print(ans)
@@ -537,67 +477,13 @@ class NumberHuaRong(QWidget):
         Astar(stat)
         print(ans)
 
-    def solve3(self):
-        self.goal = []
-        for row in range(3):
-            self.goal.append([])
-            for column in range(3):
-                temp = self.numbers[row * 3 + column]
-                self.goal[row].append(temp)
-        global target
-        target = self.goal.copy()
-        stat = self.mylist
-        global operations
-        if not judge(stat, target):
-            print('一开始无解，随机移动到step步再进行解题')
-            anscopy = ""
-            print(self.zero_row,self.zero_column)
-            for i in range(step):
-                if self.zero_row == 0:
-                    anscopy += 's'
-                    self.move(Direction.UP)
-                else:
-                    anscopy += 'w'
-                    self.move(Direction.DOWN)
-            self.change(swap)
-            stat = self.mylist
-            Astar(stat)
-            anscopy = anscopy + ans
-            operations = anscopy
-        else:
-            Astar(stat)
-            if len(ans) <= step:
-                operations = ans
-            else:
-                anscopy = ans[0:step]
-                for i in range(step):
-                    mm = ans[i]
-                    if mm == 'w':
-                        self.move(Direction.DOWN)
-                    elif mm == 's':
-                        self.move(Direction.UP)
-                    elif mm == 'a':
-                        self.move(Direction.RIGHT)
-                    elif mm == 'd':
-                        self.move(Direction.LEFT)
-                self.change(swap)
-                stat = self.mylist
-                Astar(stat)
-                anscopy = anscopy + ans
-                operations = anscopy
-
-        print('uuid=', uuid)
-        print('operations=', operations)
-        print('myswap=', myswap)
-        requestion.submit(uuid, operations, myswap)
-
 
 class Block(QLabel):
     """ 数字方块 """
 
     def __init__(self, number):
         super().__init__()
-        self.imgPath = ["D://0作业/软工实践/hrd/确定序列/" + str(zuhao) + "_" + str(i) + ".jpg" for i in range(1, 10)]
+        self.imgPath = ["sub" + str(i) + ".png" for i in range(1, 10)]
         self.number = number
         self.setFixedSize(300, 300)  # 控制窗体大小
         if self.number > 0:
@@ -612,8 +498,6 @@ class Block(QLabel):
 
 
 if __name__ == '__main__':
-    step, swap, uuid, zuhao, listproblem, dis = requestion.getproblem()
-    set(step, swap, uuid, zuhao, listproblem, dis)
     app = QApplication(sys.argv)
     ex = NumberHuaRong()
     sys.exit(app.exec_())
