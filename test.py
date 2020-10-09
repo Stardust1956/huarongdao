@@ -297,7 +297,7 @@ class NumberHuaRong(QWidget):
         # 设置宽和高
         self.setFixedSize(950, 950)
         # 设置标题和图标
-        self.setWindowTitle('图片华容道                                   WASD：移动白块   R:返回   Z：解题   C:演示')
+        self.setWindowTitle('图片华容道                                                WASD：移动白块   R:返回   Z：解题   C:演示')
         self.setWindowIcon(QIcon("图标.png"))
         # 设置背景颜色
         self.setStyleSheet("background-color:gray;")
@@ -534,7 +534,7 @@ class NumberHuaRong2(QWidget):
         # 设置宽和高
         self.setFixedSize(950, 950)
         # 设置标题和图标
-        self.setWindowTitle('图片华容道                                   WASD：移动白块   R:返回   Z：解题   C:演示')
+        self.setWindowTitle('图片华容道                                                WASD：移动白块   R:返回   Z：解题   C:演示')
         self.setWindowIcon(QIcon("图标.png"))
         # 设置背景颜色
         self.setStyleSheet("background-color:gray;")
@@ -608,7 +608,7 @@ class NumberHuaRong2(QWidget):
             self.f.show()
         self.updatePanel()
         if self.checkResult():
-            if QMessageBox.Ok == QMessageBox.information(self, '挑战结果', '恭喜您完成挑战！'):
+            if QMessageBox.Ok == QMessageBox.information(self, '挑战结果', '恭喜您完成挑战！\n本次挑战得分:'+str(self.score)):
                 #写入得分
                 with open("score.txt","a+",encoding="utf-8") as fp:
                     fp.write(str(self.score)+'\n')
@@ -676,7 +676,7 @@ class Block(QLabel):
 
     def __init__(self, number):
         super().__init__()
-        self.imgPath = ["../确定序列/" + str(zuhao) + "_" + str(i) + ".jpg" for i in range(1, 10)]
+        self.imgPath = ["D://0作业/软工实践/hrd/确定序列/" + str(zuhao) + "_" + str(i) + ".jpg" for i in range(1, 10)]
         self.number = number
         self.setFixedSize(300, 300)  # 控制窗体大小
         if self.number > 0:
@@ -716,18 +716,19 @@ class FirstUi(QMainWindow):
     def init_ui(self):
         self.resize(950, 950)
         self.setWindowTitle('图片华容道')
+        self.setWindowIcon(QIcon("图标.png"))
         #设置背景
         window_pale = QtGui.QPalette()
-        window_pale.setBrush(self.backgroundRole(), QtGui.QBrush(QtGui.QPixmap("back.jpg")))
+        window_pale.setBrush(self.backgroundRole(), QtGui.QBrush(QtGui.QPixmap("back.jpg").scaled(950,950)))
         self.setPalette(window_pale)
 
         self.label = QLabel(self)
-        self.label.setGeometry(300, 150, 400, 200)
+        self.label.setGeometry(275, 100, 600, 200)
         self.label.setText("图片华容道")
-        self.setStyleSheet("QLabel{color:rgb(0,0,0,255);font-size:70px;font-weight:bold;font-family:楷体;}")
+        self.setStyleSheet("QLabel{color:rgb(0,0,0,255);font-size:90px;font-weight:bold;font-family:楷体;}")
         self.btn1 = QPushButton('开始游戏', self)
-        self.btn1.setGeometry(375, 400, 150, 50)
-        self.btn1.setStyleSheet("QPushButton{color:black;font-size:20px}"
+        self.btn1.setGeometry(365, 350, 225, 75)
+        self.btn1.setStyleSheet("QPushButton{color:black;font-size:40px}"
                                        "QPushButton:hover{background-color:lightgreen}"
                                        "QPushButton{background-color:lightblue}"
                                        "QPushButton{border:2px}"
@@ -736,8 +737,8 @@ class FirstUi(QMainWindow):
                                        )
         self.btn1.clicked.connect(self.slot_btn_function3)
         self.btn2 = QPushButton('游戏规则', self)
-        self.btn2.setGeometry(375, 550, 150, 50)
-        self.btn2.setStyleSheet("QPushButton{color:black;font-size:20px}"
+        self.btn2.setGeometry(365, 500,225,75)
+        self.btn2.setStyleSheet("QPushButton{color:black;font-size:40px}"
                                        "QPushButton:hover{background-color:lightgreen}"
                                        "QPushButton{background-color:lightblue}"
                                        "QPushButton{border:2px}"
@@ -746,8 +747,8 @@ class FirstUi(QMainWindow):
                                        )
         self.btn2.clicked.connect(self.slot_btn_function2)
         self.btn3 = QPushButton('联网解题模式', self)
-        self.btn3.setGeometry(375, 700, 150, 50)
-        self.btn3.setStyleSheet("QPushButton{color:black;font-size:20px}"
+        self.btn3.setGeometry(365, 650, 225,75)
+        self.btn3.setStyleSheet("QPushButton{color:black;font-size:35px}"
                                        "QPushButton:hover{background-color:lightgreen}"
                                        "QPushButton{background-color:lightblue}"
                                        "QPushButton{border:2px}"
@@ -757,8 +758,8 @@ class FirstUi(QMainWindow):
         self.btn3.clicked.connect(self.slot_btn_function1)
 
         self.btn1 = QPushButton('历史得分', self)
-        self.btn1.setGeometry(375, 850, 150, 50)
-        self.btn1.setStyleSheet("QPushButton{color:black;font-size:20px}"
+        self.btn1.setGeometry(365, 800, 225,75)
+        self.btn1.setStyleSheet("QPushButton{color:black;font-size:40px}"
                                 "QPushButton:hover{background-color:lightgreen}"
                                 "QPushButton{background-color:lightblue}"
                                 "QPushButton{border:2px}"
@@ -791,9 +792,10 @@ class SecondUi(QWidget):
     def init_ui(self):
         self.resize(950, 950)
         self.setWindowTitle('游戏规则')
+        self.setWindowIcon(QIcon("图标.png"))
         #设置背景
         window_pale = QtGui.QPalette()
-        window_pale.setBrush(self.backgroundRole(), QtGui.QBrush(QtGui.QPixmap("back.jpg")))
+        window_pale.setBrush(self.backgroundRole(), QtGui.QBrush(QtGui.QPixmap("back.jpg").scaled(950,950)))
         self.setPalette(window_pale)
 
         self.label1 = QLabel(self)
@@ -806,15 +808,16 @@ class SecondUi(QWidget):
         self.label.setText("1.将原始字符图片平均切割成九份小图，并随机抠掉一张图充当空格，此时图片为原始状态，然后我们将小图的顺序打乱并拼接回去，你需要做的事就是移动白色的图片将图片恢复到原始的状态\n\n2.当你移动到一定步数的时候，我们会强制调换此时棋盘上的两个格子，由于此时棋盘不一定有解，所以我们给了你一次自由调换的机会，你可以调换任意两个图片的位置，注意这个自由调换只能在棋盘无解的情况下使用，且需紧接着强制调换的操作。\n\n3.按Z解题，按C进行AI提示")
         self.label.setStyleSheet("QLabel{color:rgb(0,0,0,255);font-size:30px;}")
         self.label.setWordWrap(True)
+
         self.btn = QPushButton('返回主页面', self)
-        self.btn.setGeometry(0,0, 150, 50)
-        self.btn.setStyleSheet("QPushButton{color:black;font-size:20px}"
-                                "QPushButton:hover{background-color:lightgreen}"
-                                "QPushButton{background-color:lightblue}"
-                                "QPushButton{border:2px}"
-                                "QPushButton{border-radius:10px}"
-                                "QPushButton{padding:2px 4px}"
-                                )
+        self.btn.setGeometry(0, 0, 225, 75)
+        self.btn.setStyleSheet("QPushButton{color:black;font-size:40px}"
+                               "QPushButton:hover{background-color:lightgreen}"
+                               "QPushButton{background-color:lightblue}"
+                               "QPushButton{border:2px}"
+                               "QPushButton{border-radius:10px}"
+                               "QPushButton{padding:2px 4px}"
+                               )
         self.btn.clicked.connect(self.slot_btn_function)
 
     def slot_btn_function(self):
@@ -830,9 +833,10 @@ class ThirdUi(QWidget):
     def init_ui(self):
         self.resize(950, 950)
         self.setWindowTitle('历史得分')
+        self.setWindowIcon(QIcon("图标.png"))
         #设置背景
         window_pale = QtGui.QPalette()
-        window_pale.setBrush(self.backgroundRole(), QtGui.QBrush(QtGui.QPixmap("back.jpg")))
+        window_pale.setBrush(self.backgroundRole(), QtGui.QBrush(QtGui.QPixmap("back.jpg").scaled(950,950)))
         self.setPalette(window_pale)
 
         self.label1 = QLabel(self)
@@ -847,7 +851,7 @@ class ThirdUi(QWidget):
             for score in scores:
                 ls.append(int(score.replace('\n', '')))
             ls = sorted(ls)
-            finalstr = ''
+            finalstr = ' 步数\n'
             if len(ls)>=15:
                 for i in range(15):
                     if i<9:
@@ -864,14 +868,14 @@ class ThirdUi(QWidget):
             self.label.setStyleSheet("QLabel{color:rgb(0,0,0,255);font-size:40px;font-weight:bold;font-family:楷体;}")
         # self.label.setStyleSheet("QLabel{color:rgb(33,215,217,255)}")
         self.btn = QPushButton('返回主页面', self)
-        self.btn.setGeometry(0,0, 150, 50)
-        self.btn.setStyleSheet("QPushButton{color:black;font-size:20px}"
-                                "QPushButton:hover{background-color:lightgreen}"
-                                "QPushButton{background-color:lightblue}"
-                                "QPushButton{border:2px}"
-                                "QPushButton{border-radius:10px}"
-                                "QPushButton{padding:2px 4px}"
-                                )
+        self.btn.setGeometry(0, 0, 225, 75)
+        self.btn.setStyleSheet("QPushButton{color:black;font-size:40px}"
+                               "QPushButton:hover{background-color:lightgreen}"
+                               "QPushButton{background-color:lightblue}"
+                               "QPushButton{border:2px}"
+                               "QPushButton{border-radius:10px}"
+                               "QPushButton{padding:2px 4px}"
+                               )
         self.btn.clicked.connect(self.slot_btn_function)
 
     def slot_btn_function(self):
