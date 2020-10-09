@@ -296,6 +296,7 @@ class NumberHuaRong(QWidget):
         self.setLayout(self.gltMain)
         # 设置宽和高
         self.setFixedSize(950, 950)
+
         # 设置标题和图标
         self.setWindowTitle('图片华容道              WASD：移动白块   R:返回   Z：解题   C:演示')
         self.setWindowIcon(QIcon("图标.png"))
@@ -714,7 +715,7 @@ class FirstUi(QMainWindow):
         self.init_ui()
 
     def init_ui(self):
-        self.resize(950, 950)
+        self.setFixedSize(950, 950)
         self.setWindowTitle('图片华容道')
         self.setWindowIcon(QIcon("图标.png"))
         #设置背景
