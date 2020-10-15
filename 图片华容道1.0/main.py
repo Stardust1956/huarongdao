@@ -1,4 +1,4 @@
-#coding:utf-8
+# coding:utf-8
 import copy
 import sys
 import random
@@ -251,6 +251,7 @@ class Direction(IntEnum):
     LEFT = 2
     RIGHT = 3
 
+
 # 设置参数
 def set(x, y, z, p, q, r):
     global step
@@ -287,9 +288,16 @@ class NumberHuaRong(QWidget):
         self.count = 0
 
     def initUI(self):
+        global step
+        global swap
+        global uuid
+        global zuhao
+        global listproblem
+        global dis
+        step, swap, uuid, zuhao, listproblem, dis = requestion.getproblem()
+        set(step, swap, uuid, zuhao, listproblem, dis)
         # 设置方块间隔
         self.gltMain.setSpacing(10)
-
         self.onInit()
 
         # 设置布局
@@ -343,7 +351,14 @@ class NumberHuaRong(QWidget):
         if key == Qt.Key_Right or key == Qt.Key_D:
             self.move(Direction.LEFT)
         if key == Qt.Key_Z:
+            self.count = 0
             self.solve()
+            for row in range(3):
+                for column in range(3):
+                    temp = self.blocks[row][column]
+                    if temp == 0:
+                        self.zero_row = row
+                        self.zero_column = column
             self.ans = ans
         if key == Qt.Key_C:
             mm = self.ans[self.count]
@@ -366,7 +381,6 @@ class NumberHuaRong(QWidget):
         if self.checkResult():
             if QMessageBox.Ok == QMessageBox.information(self, '挑战结果', '恭喜您完成挑战！'):
                 self.onInit()  # 结束后重新开始
-
 
     # 方块移动算法
     def move(self, direction):
@@ -418,7 +432,7 @@ class NumberHuaRong(QWidget):
         print('第{0}步 强制交换{1}：'.format(step, swap))
         # print('强制交换前', self.blocks)
         self.blocks[row1][col1], self.blocks[row2][col2] = self.blocks[row2][col2], self.blocks[row1][col1]
-        # print('强制交换后',self.blocks)
+        # print('强制交换后', self.blocks)
         if judge(self.blocks, self.goal):
             return
         else:
@@ -445,7 +459,7 @@ class NumberHuaRong(QWidget):
             col2 = flag2 % 3
             # print('用户交换前', self.blocks)
             self.blocks[row1][col1], self.blocks[row2][col2] = self.blocks[row2][col2], self.blocks[row1][col1]
-            print('无解，进行用户交换{0}：'.format([flag1+1, flag2+1]))
+            print('无解，进行用户交换{0}：'.format([flag1 + 1, flag2 + 1]))
             # print('用户交换后', self.blocks)
             myswap = [flag1 + 1, flag2 + 1]
             return
@@ -464,7 +478,6 @@ class NumberHuaRong(QWidget):
         if not judge(stat, target):
             print('一开始无解，随机移动到step步再进行解题')
             anscopy = ""
-            print(self.zero_row,self.zero_column)
             for i in range(step):
                 if self.zero_row == 0:
                     anscopy += 's'
@@ -567,6 +580,7 @@ class NumberHuaRong2(QWidget):
             self.move(Direction(random_num))
         self.mylist = self.blocks.copy()
         self.updatePanel()
+
     # 检测按键
     def keyPressEvent(self, event):
         global ans
@@ -609,13 +623,12 @@ class NumberHuaRong2(QWidget):
             self.f.show()
         self.updatePanel()
         if self.checkResult():
-            if QMessageBox.Ok == QMessageBox.information(self, '挑战结果', '恭喜您完成挑战！\n本次挑战得分:'+str(self.score)):
-                #写入得分
-                with open("score.txt","a+",encoding="utf-8") as fp:
-                    fp.write(str(self.score)+'\n')
+            if QMessageBox.Ok == QMessageBox.information(self, '挑战结果', '恭喜您完成挑战！\n本次挑战得分:' + str(self.score)):
+                # 写入得分
+                with open("score.txt", "a+", encoding="utf-8") as fp:
+                    fp.write(str(self.score) + '\n')
                 print(self.score)
                 self.onInit()  # 结束后重新开始
-
 
     # 方块移动算法
     def move(self, direction):
@@ -690,6 +703,7 @@ class Block(QLabel):
         if self.number == 0:
             self.setStyleSheet("background-color:white;border-radius:10px;")
 
+
 class Block2(QLabel):
     """ 数字方块 """
 
@@ -718,9 +732,9 @@ class FirstUi(QMainWindow):
         self.setFixedSize(950, 950)
         self.setWindowTitle('图片华容道')
         self.setWindowIcon(QIcon("图标.png"))
-        #设置背景
+        # 设置背景
         window_pale = QtGui.QPalette()
-        window_pale.setBrush(self.backgroundRole(), QtGui.QBrush(QtGui.QPixmap("back.jpg").scaled(950,950)))
+        window_pale.setBrush(self.backgroundRole(), QtGui.QBrush(QtGui.QPixmap("back.jpg").scaled(950, 950)))
         self.setPalette(window_pale)
 
         self.label = QLabel(self)
@@ -730,36 +744,36 @@ class FirstUi(QMainWindow):
         self.btn1 = QPushButton('开始游戏', self)
         self.btn1.setGeometry(365, 350, 225, 75)
         self.btn1.setStyleSheet("QPushButton{color:black;font-size:40px}"
-                                       "QPushButton:hover{background-color:lightgreen}"
-                                       "QPushButton{background-color:lightblue}"
-                                       "QPushButton{border:2px}"
-                                       "QPushButton{border-radius:10px}"
-                                       "QPushButton{padding:2px 4px}"
-                                       )
+                                "QPushButton:hover{background-color:lightgreen}"
+                                "QPushButton{background-color:lightblue}"
+                                "QPushButton{border:2px}"
+                                "QPushButton{border-radius:10px}"
+                                "QPushButton{padding:2px 4px}"
+                                )
         self.btn1.clicked.connect(self.slot_btn_function3)
         self.btn2 = QPushButton('游戏规则', self)
-        self.btn2.setGeometry(365, 500,225,75)
+        self.btn2.setGeometry(365, 500, 225, 75)
         self.btn2.setStyleSheet("QPushButton{color:black;font-size:40px}"
-                                       "QPushButton:hover{background-color:lightgreen}"
-                                       "QPushButton{background-color:lightblue}"
-                                       "QPushButton{border:2px}"
-                                       "QPushButton{border-radius:10px}"
-                                       "QPushButton{padding:2px 4px}"
-                                       )
+                                "QPushButton:hover{background-color:lightgreen}"
+                                "QPushButton{background-color:lightblue}"
+                                "QPushButton{border:2px}"
+                                "QPushButton{border-radius:10px}"
+                                "QPushButton{padding:2px 4px}"
+                                )
         self.btn2.clicked.connect(self.slot_btn_function2)
         self.btn3 = QPushButton('联网解题模式', self)
-        self.btn3.setGeometry(365, 650, 225,75)
+        self.btn3.setGeometry(365, 650, 225, 75)
         self.btn3.setStyleSheet("QPushButton{color:black;font-size:35px}"
-                                       "QPushButton:hover{background-color:lightgreen}"
-                                       "QPushButton{background-color:lightblue}"
-                                       "QPushButton{border:2px}"
-                                       "QPushButton{border-radius:10px}"
-                                       "QPushButton{padding:2px 4px}"
-                                       )
+                                "QPushButton:hover{background-color:lightgreen}"
+                                "QPushButton{background-color:lightblue}"
+                                "QPushButton{border:2px}"
+                                "QPushButton{border-radius:10px}"
+                                "QPushButton{padding:2px 4px}"
+                                )
         self.btn3.clicked.connect(self.slot_btn_function1)
 
         self.btn1 = QPushButton('历史得分', self)
-        self.btn1.setGeometry(365, 800, 225,75)
+        self.btn1.setGeometry(365, 800, 225, 75)
         self.btn1.setStyleSheet("QPushButton{color:black;font-size:40px}"
                                 "QPushButton:hover{background-color:lightgreen}"
                                 "QPushButton{background-color:lightblue}"
@@ -773,30 +787,35 @@ class FirstUi(QMainWindow):
         self.close()
         self.s = NumberHuaRong()
         self.s.show()
+
     def slot_btn_function2(self):
         self.hide()
         self.s = SecondUi()
         self.s.show()
+
     def slot_btn_function3(self):
         self.close()
         self.s = NumberHuaRong2()
         self.s.show()
+
     def slot_btn_function4(self):
         self.close()
         self.s = ThirdUi()
         self.s.show()
+
+
 class SecondUi(QWidget):
     def __init__(self):
         super(SecondUi, self).__init__()
         self.init_ui()
 
     def init_ui(self):
-        self.resize(950, 950)
+        self.setFixedSize(950, 950)
         self.setWindowTitle('游戏规则')
         self.setWindowIcon(QIcon("图标.png"))
-        #设置背景
+        # 设置背景
         window_pale = QtGui.QPalette()
-        window_pale.setBrush(self.backgroundRole(), QtGui.QBrush(QtGui.QPixmap("back.jpg").scaled(950,950)))
+        window_pale.setBrush(self.backgroundRole(), QtGui.QBrush(QtGui.QPixmap("back.jpg").scaled(950, 950)))
         self.setPalette(window_pale)
 
         self.label1 = QLabel(self)
@@ -805,8 +824,9 @@ class SecondUi(QWidget):
         self.label1.setStyleSheet("QLabel{color:rgb(0,0,0,255);font-size:60px;font-weight:bold;font-family:楷体;}")
 
         self.label = QLabel(self)
-        self.label.setGeometry(150, 150, 600, 600)
-        self.label.setText("1.将原始字符图片平均切割成九份小图，并随机抠掉一张图充当空格，此时图片为原始状态，然后我们将小图的顺序打乱并拼接回去，你需要做的事就是移动白色的图片将图片恢复到原始的状态\n\n2.当你移动到一定步数的时候，我们会强制调换此时棋盘上的两个格子，由于此时棋盘不一定有解，所以我们给了你一次自由调换的机会，你可以调换任意两个图片的位置，注意这个自由调换只能在棋盘无解的情况下使用，且需紧接着强制调换的操作。\n\n3.按Z解题，按C进行AI提示")
+        self.label.setGeometry(225, 150, 500, 600)
+        self.label.setText(
+            "1.将原始字符图片平均切割成九份小图，并随机抠掉一张图充当空格，此时图片为原始状态，然后我们将小图的顺序打乱并拼接回去，你需要做的事就是移动白色的图片将图片恢复到原始的状态\n\n2.当你移动到一定步数的时候，我们会强制调换此时棋盘上的两个格子，由于此时棋盘不一定有解，所以我们给了你一次自由调换的机会，你可以调换任意两个图片的位置，注意这个自由调换只能在棋盘无解的情况下使用，且需紧接着强制调换的操作。\n\n3.按Z解题，按C进行AI提示")
         self.label.setStyleSheet("QLabel{color:rgb(0,0,0,255);font-size:30px;}")
         self.label.setWordWrap(True)
 
@@ -826,6 +846,7 @@ class SecondUi(QWidget):
         self.f = FirstUi()
         self.f.show()
 
+
 class ThirdUi(QWidget):
     def __init__(self):
         super(ThirdUi, self).__init__()
@@ -835,9 +856,9 @@ class ThirdUi(QWidget):
         self.resize(950, 950)
         self.setWindowTitle('历史得分')
         self.setWindowIcon(QIcon("图标.png"))
-        #设置背景
+        # 设置背景
         window_pale = QtGui.QPalette()
-        window_pale.setBrush(self.backgroundRole(), QtGui.QBrush(QtGui.QPixmap("back.jpg").scaled(950,950)))
+        window_pale.setBrush(self.backgroundRole(), QtGui.QBrush(QtGui.QPixmap("back.jpg").scaled(950, 950)))
         self.setPalette(window_pale)
 
         self.label1 = QLabel(self)
@@ -846,25 +867,25 @@ class ThirdUi(QWidget):
         self.label1.setStyleSheet("QLabel{color:rgb(0,0,0,255);font-size:60px;font-weight:bold;font-family:楷体;}")
         self.label = QLabel(self)
         self.label.setGeometry(400, 150, 600, 800)
-        with open("score.txt","r",encoding="utf-8") as fp:
+        with open("score.txt", "r", encoding="utf-8") as fp:
             scores = fp.readlines()
-            ls = []#只保留前15个记录
+            ls = []  # 只保留前15个记录
             for score in scores:
                 ls.append(int(score.replace('\n', '')))
             ls = sorted(ls)
             finalstr = ' 步数\n'
-            if len(ls)>=15:
+            if len(ls) >= 15:
                 for i in range(15):
-                    if i<9:
-                        finalstr += (str(i + 1) + '.' +"  "+ str(ls[i]) + '\n')
+                    if i < 9:
+                        finalstr += (str(i + 1) + '.' + "  " + str(ls[i]) + '\n')
                     else:
-                        finalstr += (str(i+1)+'.'+" " +str(ls[i])+'\n')
+                        finalstr += (str(i + 1) + '.' + " " + str(ls[i]) + '\n')
             else:
                 for i in range(len(ls)):
-                    if i<9:
-                        finalstr += (str(i + 1) + '.' +"  "+ str(ls[i]) + '\n')
+                    if i < 9:
+                        finalstr += (str(i + 1) + '.' + "  " + str(ls[i]) + '\n')
                     else:
-                        finalstr += (str(i+1)+'.'+" " +str(ls[i])+'\n')
+                        finalstr += (str(i + 1) + '.' + " " + str(ls[i]) + '\n')
             self.label.setText(finalstr)
             self.label.setStyleSheet("QLabel{color:rgb(0,0,0,255);font-size:40px;font-weight:bold;font-family:楷体;}")
         # self.label.setStyleSheet("QLabel{color:rgb(33,215,217,255)}")
@@ -884,9 +905,8 @@ class ThirdUi(QWidget):
         self.f = FirstUi()
         self.f.show()
 
+
 if __name__ == '__main__':
-    step, swap, uuid, zuhao, listproblem, dis = requestion.getproblem()
-    set(step, swap, uuid, zuhao, listproblem, dis)
     app = QApplication(sys.argv)
     w = FirstUi()
     w.show()

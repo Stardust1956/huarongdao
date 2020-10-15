@@ -77,6 +77,7 @@ def getxulie(zuhao):
 
 def getlist():
     path1 = ''
+    zimu = 'aabbcddefghhjkmmnooppqqrstuuvwxxyyzz'
     for i in range(1, 10):
         filename = 'D://0作业/软工实践/hrd/图片华容道1.0/' + "Getsub" + str(i) + ".jpg"
         if not compare_images(filename, 'white.jpg'):
@@ -86,6 +87,7 @@ def getlist():
     zuhao = getzu(path1)
     alist, disnumber = getxulie(zuhao)
     print("该图是第{0}张图片".format(zuhao))
+    print("对应字母为：", zimu[zuhao])
     print("题目序列是")
     print(alist[0])
     print(alist[1])
