@@ -341,15 +341,15 @@ class NumberHuaRong(QWidget):
                     self.zero_row = row
                     self.zero_column = column
         # 打乱数组
-        for i in range(5000):
+        for i in range(100):
             random_num = random.randint(0, 3)
             self.move(Direction(random_num))
         self.mylist = self.blocks.copy()
         self.movestep = 0
+        self.movestep2 = 0
         self.updatePanel()
         self.solve()
         self.minstep = len(ans)
-        print(self.minstep)
 
     # 检测按键
     def keyPressEvent(self, event):
@@ -358,15 +358,19 @@ class NumberHuaRong(QWidget):
         if key == Qt.Key_Up or key == Qt.Key_W:
             self.move(Direction.DOWN)
             self.movestep += 1
+            self.movestep2 += 1
         if key == Qt.Key_Down or key == Qt.Key_S:
             self.move(Direction.UP)
             self.movestep += 1
+            self.movestep2 += 1
         if key == Qt.Key_Left or key == Qt.Key_A:
             self.move(Direction.RIGHT)
             self.movestep += 1
+            self.movestep2 += 1
         if key == Qt.Key_Right or key == Qt.Key_D:
             self.move(Direction.LEFT)
             self.movestep += 1
+            self.movestep2 += 1
         if key == Qt.Key_Z:
             self.count = 0
             self.solve()
@@ -422,10 +426,10 @@ class NumberHuaRong(QWidget):
                 self.updatePanel()
 
         if self.checkResult():
-            if QMessageBox.Ok == QMessageBox.information(self, '挑战结果', '恭喜您完成挑战！\n本次挑战得分:' + str(self.movestep)+'\n离最优解差:'+str(self.movestep-self.minstep)+"步"):
+            if QMessageBox.Ok == QMessageBox.information(self, '挑战结果', '恭喜您完成挑战！\n本次挑战移动步数:' + str(self.movestep2)+"步"+'\n离最优解差:'+str(self.movestep2-self.minstep)+"步"):
                 # 写入得分
                 with open("score.txt", "a+", encoding="utf-8") as fp:
-                    fp.write(str(self.movestep) + '\n')
+                    fp.write(str(self.movestep2) + '\n')
                 self.initUI()  # 结束后重新开始
     # 方块移动算法
     def move(self, direction):
@@ -589,7 +593,7 @@ class NumberHuaRong2(QWidget):
             self.f.show()
         self.updatePanel()
         if self.checkResult():
-            if QMessageBox.Ok == QMessageBox.information(self, '挑战结果', '恭喜您完成挑战！\n本次挑战得分:' + str(self.score)):
+            if QMessageBox.Ok == QMessageBox.information(self, '挑战结果', '恭喜您完成挑战！\n本次挑战步数:' + str(self.score)+"步"):
                 # 写入得分
                 with open("score.txt", "a+", encoding="utf-8") as fp:
                     fp.write(str(self.score) + '\n')
