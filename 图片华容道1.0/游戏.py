@@ -347,6 +347,9 @@ class NumberHuaRong(QWidget):
         self.mylist = self.blocks.copy()
         self.movestep = 0
         self.updatePanel()
+        self.solve()
+        self.minstep = len(ans)
+        print(self.minstep)
 
     # 检测按键
     def keyPressEvent(self, event):
@@ -419,7 +422,7 @@ class NumberHuaRong(QWidget):
                 self.updatePanel()
 
         if self.checkResult():
-            if QMessageBox.Ok == QMessageBox.information(self, '挑战结果', '恭喜您完成挑战！\n本次挑战得分:' + str(self.movestep)):
+            if QMessageBox.Ok == QMessageBox.information(self, '挑战结果', '恭喜您完成挑战！\n本次挑战得分:' + str(self.movestep)+'\n离最优解差:'+str(self.movestep-self.minstep)+"步"):
                 # 写入得分
                 with open("score.txt", "a+", encoding="utf-8") as fp:
                     fp.write(str(self.movestep) + '\n')
@@ -474,7 +477,6 @@ class NumberHuaRong(QWidget):
         self.blocks[row1][col1], self.blocks[row2][col2] = self.blocks[row2][col2], self.blocks[row1][col1]
 
     def solve(self):
-
         global target
         target = self.goal.copy()
         stat = self.mylist
