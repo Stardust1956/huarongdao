@@ -21,7 +21,7 @@ def gethtml(url):
 
 
 def getproblem():
-    url = "http://47.102.118.1:8089/api/problem?stuid=031802433"
+    url = "http://47.102.118.1:8089/api/problem?stuid=031802418"
     # 每次请求的结果都不一样，动态变化
     text = json.loads(gethtml(url))
     img_base64 = text["img"]
