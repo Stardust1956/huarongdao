@@ -418,7 +418,7 @@ class NumberHuaRong():
 
 if __name__ == '__main__':
     while 1:
-        print("1 获取赛题 2 获取赛题解题记录 3 创建赛题 4 挑战赛题 5 查看未挑战赛题 6 查看所有队伍排名 7查看我的队伍信息 8 一键解题 9 提交 10 挑战赛题2")
+        print("1 获取赛题 2 获取赛题解题记录 3 创建赛题 4 挑战赛题 5 查看未挑战赛题 6 查看所有队伍排名 7查看我的队伍信息 8 一键解题")
         operation = int(input("请输入你要的操作："))
         if operation == 1:
             jiekou.getAllProblems()
@@ -462,13 +462,7 @@ if __name__ == '__main__':
                     print("operations=", operations)
                     print("myswap=", myswap)
                     print("______________________________________")
-        elif operation == 9:
-            uuid = "31f6bc49-66fb-4202-9a03-d9a6b102af31"
-            step, swap, uuid, zuhao, listproblem, dis = jiekou.challenge(uuid)
-            operations = "waassddwasawdsdwawasdsawwds"
-            myswap = [1, 2]
-            jiekou.submit(uuid, operations, myswap)
-        elif operation == 10:
+        '''elif operation == 10:
             uuid1 = input("请输入要挑战赛题的uuid：")
             step, swap, uuid, zuhao, listproblem, dis = jiekou.challenge(uuid1)
             set(step, swap, uuid, zuhao, listproblem, dis)
@@ -490,7 +484,7 @@ if __name__ == '__main__':
             set(step, swap, uuid, zuhao, listproblem, dis)
             NumberHuaRong()
             print("operations= ", operations)
-            print("myswap = ", myswap)
+            print("myswap = ", myswap)'''
 
 
 
