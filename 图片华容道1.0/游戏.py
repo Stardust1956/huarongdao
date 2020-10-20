@@ -347,6 +347,7 @@ class NumberHuaRong(QWidget):
         self.mylist = self.blocks.copy()
         self.movestep = 0
         self.movestep2 = 0
+        self.flag = 0
         self.updatePanel()
         self.solve()
         self.minstep = len(ans)
@@ -387,6 +388,7 @@ class NumberHuaRong(QWidget):
                 self.move(Direction.LEFT)
             self.updatePanel()
             self.count += 1
+            self.flag = 1
 
         if key == Qt.Key_R:
             self.close()
@@ -426,11 +428,16 @@ class NumberHuaRong(QWidget):
                 self.updatePanel()
 
         if self.checkResult():
-            if QMessageBox.Ok == QMessageBox.information(self, '挑战结果', '恭喜您完成挑战！\n本次挑战移动步数:' + str(self.movestep2)+"步"+'\n离最优解差:'+str(self.movestep2-self.minstep)+"步"):
-                # 写入得分
-                with open("score.txt", "a+", encoding="utf-8") as fp:
-                    fp.write(str(self.movestep2) + '\n')
-                self.initUI()  # 结束后重新开始
+            if self.flag == 0:
+                if QMessageBox.Ok == QMessageBox.information(self, '挑战结果', '恭喜您完成挑战！\n本次挑战移动步数:' + str(self.movestep2)+"步"+'\n离最优解差:'+str(self.movestep2-self.minstep)+"步"):
+                    # 写入得分
+                    with open("score.txt", "a+", encoding="utf-8") as fp:
+                        fp.write(str(self.movestep2) + '\n')
+                    self.initUI()  # 结束后重新开始
+            else:
+                if QMessageBox.Ok == QMessageBox.information(self, 'AI演示', "AI演示结束，结果不计入历史记录"):
+                    self.initUI()
+
     # 方块移动算法
     def move(self, direction):
         if direction == Direction.UP:  # 上
